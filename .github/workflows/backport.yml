@@ -11,17 +11,18 @@ jobs:
       # 1. Checkout
       - uses: actions/checkout@v3
 
-      # 2. Setup .NET
-      - uses: actions/setup-dotnet@v3
+      # 2. Install EXACT SDK from global.json
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 10.0.x
+          global-json-file: global.json
 
-      # 3. Install workloads BEFORE restore (critical)
+      # 3. Install workloads (must be BEFORE restore)
       - name: Install MAUI workloads
         run: |
           dotnet workload install android ios maccatalyst macos wasm-tools
 
-      # 4. Restore AFTER workloads are installed
+      # 4. Restore
       - name: Restore solution
         run: dotnet restore ./Microsoft.Maui.sln
 
