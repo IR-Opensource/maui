@@ -1,15 +1,13 @@
-name: .NET MAUI Windows Build
+name: Install .NET Workloads
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-windows:
+  install-workloads:
     runs-on: windows-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
@@ -18,10 +16,10 @@ jobs:
 
       - name: Install supported workloads
         run: |
+          # Install workloads that work on Windows
           dotnet workload install android wasm-tools
+          # Optionally install MAUI templates if Windows-compatible
+          # dotnet workload install maui
 
-      - name: Restore solution
-        run: dotnet restore ./Microsoft.Maui.sln
-
-      - name: Build solution
-        run: dotnet build ./Microsoft.Maui.sln --configuration Release --no-restore
+      - name: List installed workloads
+        run: dotnet workload list
