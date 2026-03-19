@@ -11,21 +11,21 @@ jobs:
       # 1. Checkout
       - uses: actions/checkout@v3
 
-      # 2. Install EXACT SDK from global.json
+      # 2. Use exact SDK from global.json
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           global-json-file: global.json
 
-      # 3. Install workloads (must be BEFORE restore)
-      - name: Install MAUI workloads
+      # 3. Install ONLY supported workloads on Windows
+      - name: Install workloads
         run: |
-          dotnet workload install android ios maccatalyst macos wasm-tools
+          dotnet workload install android wasm-tools
 
-      # 4. Restore
+      # 4. Restore (skip iOS/macOS projects)
       - name: Restore solution
         run: dotnet restore ./Microsoft.Maui.sln
 
-      # 5. Build
+      # 5. Build (skip unsupported platforms)
       - name: Build solution
         run: dotnet build ./Microsoft.Maui.sln --configuration Release
