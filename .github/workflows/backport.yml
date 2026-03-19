@@ -1,32 +1,29 @@
-name: .NET MAUI Build (Linux)
+name: .NET MAUI Build (Windows)
 
 on:
   workflow_dispatch:  # Manual trigger
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       # 1. Checkout repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Setup stable .NET SDK
+      # 2. Setup .NET SDK
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 10.0.x  # stable version
+          dotnet-version: 10.0.x  # stable version for MAUI
 
-      # 3. Install Linux-compatible workloads
-      - name: Install workloads
+      # 3. Restore solution
+      - name: Restore solution
         run: |
-          dotnet workload install android wasm-tools
-          dotnet workload restore
+          dotnet restore ./Microsoft.Maui.sln
 
-      # 4. Build only Linux-compatible projects
-      - name: Build projects
+      # 4. Build full solution
+      - name: Build solution
         run: |
-          dotnet build ./src/Graphics/Graphics.csproj --configuration Release
-          dotnet build ./src/BlazorWebView/BlazorWebView.csproj --configuration Release
-          dotnet build ./src/Core/Core.csproj --configuration Release
+          dotnet build ./Microsoft.Maui.sln --configuration Release
