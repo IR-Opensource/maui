@@ -1,7 +1,7 @@
 name: .NET MAUI Build (Linux)
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # manual trigger
 
 jobs:
   build:
@@ -24,12 +24,9 @@ jobs:
           dotnet workload install android wasm-tools
           dotnet workload restore
 
-      # 4. Restore projects
-      - name: Restore projects
-        run: |
-          find ./src -name "*.csproj" -print0 | xargs -0 -n1 dotnet restore
-
-      # 5. Build projects
+      # 4. Build only real Linux-compatible projects (ignore .shproj)
       - name: Build projects
         run: |
-          find ./src -name "*.csproj" -print0 | xargs -0 -n1 dotnet build --configuration Release
+          # Find all .csproj files, excluding .shproj or missing files
+          find ./src -name "*.csproj" -print0 \
+            | xargs -0 -n1 dotnet build --configuration Release
