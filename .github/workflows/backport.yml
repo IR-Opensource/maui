@@ -1,4 +1,4 @@
-name: Install .NET Workloads
+name: NET Workloads XX IR
 
 on:
   workflow_dispatch:
