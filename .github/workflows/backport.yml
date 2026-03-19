@@ -1,28 +1,35 @@
 name: .NET MAUI Build (Ubuntu)
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # manual trigger from Actions tab
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Setup .NET SDK
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 10.0.x
+          dotnet-version: 10.0.x  # match your SDK version
 
-      - name: Install Linux workloads
+      # Step 3: Install Linux-supported workloads
+      - name: Install workloads for Linux
         run: |
           dotnet workload install android wasm-tools
           dotnet workload restore
 
+      # Step 4: Restore solution (skip invalid Windows/iOS/macOS projects)
       - name: Restore solution
-        run: dotnet restore ./Microsoft.Maui.sln /p:EnableWindowsTargeting=true
+        run: |
+          dotnet restore ./Microsoft.Maui.sln /p:EnableWindowsTargeting=true /p:SkipInvalidProjects=true
 
+      # Step 5: Build solution (skip invalid projects)
       - name: Build solution
-        run: dotnet build ./Microsoft.Maui.sln --no-restore --configuration Release /p:EnableWindowsTargeting=true
+        run: |
+          dotnet build ./Microsoft.Maui.sln --no-restore --configuration Release /p:EnableWindowsTargeting=true /p:SkipInvalidProjects=true
