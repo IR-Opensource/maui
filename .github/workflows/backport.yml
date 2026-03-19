@@ -1,20 +1,26 @@
-name: .NET Build xx IR
+name: .NET Build
 
 on:
-  workflow_dispatch:
-
-permissions:
-  contents: read
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Run build
-    steps:     
-      - uses: actions/checkout@v2
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 9.0.100-rc.2.24474.11
-      - name: Build
-        run: dotnet build --no-restore
+          dotnet-version: 8.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore ./src/Microsoft.Maui.sln
+
+      - name: Build project
+        run: dotnet build ./src/Microsoft.Maui.sln --no-restore --configuration Release
