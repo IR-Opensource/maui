@@ -4,22 +4,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  install-workloads:
+  setup-dotnet:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup .NET SDK
+      - name: Install .NET 9.0.312 SDK
         uses: actions/setup-dotnet@v3
         with:
-          # Pick an installed SDK version, e.g., 10.0.x
-          dotnet-version: '10.0.x'
+          dotnet-version: '9.0.312'
 
       - name: Install supported workloads
         run: |
-          # Only workloads that can be installed on Windows
           dotnet workload install android wasm-tools
-          # Skip iOS/macOS/maccatalyst/tvOS
 
-      - name: List installed workloads
-        run: dotnet workload list
+      - name: Verify SDK & workloads
+        run: |
+          dotnet --info
+          dotnet workload list
