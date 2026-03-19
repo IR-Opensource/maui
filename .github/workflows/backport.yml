@@ -1,4 +1,4 @@
-name: NET Workloads XX IR
+name: Install .NET Workloads
 
 on:
   workflow_dispatch:
@@ -12,14 +12,14 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          global-json-file: global.json
+          # Pick an installed SDK version, e.g., 10.0.x
+          dotnet-version: '10.0.x'
 
       - name: Install supported workloads
         run: |
-          # Install workloads that work on Windows
+          # Only workloads that can be installed on Windows
           dotnet workload install android wasm-tools
-          # Optionally install MAUI templates if Windows-compatible
-          # dotnet workload install maui
+          # Skip iOS/macOS/maccatalyst/tvOS
 
       - name: List installed workloads
         run: dotnet workload list
