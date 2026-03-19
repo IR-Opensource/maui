@@ -1,4 +1,4 @@
-name: .NET Build
+name: .NET MAUI Build
 
 on:
   workflow_dispatch:  # manual trigger
@@ -11,13 +11,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup .NET
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x  # or whatever version you are using
 
-      - name: Restore dependencies
+      - name: Install required workloads
+        run: |
+          dotnet workload install android ios macos wasm-tools
+          dotnet workload restore
+
+      - name: Restore solution
         run: dotnet restore ./Microsoft.Maui.sln
 
-      - name: Build project
-        run: dotnet build ./Microsoft.Maui.sln --no-restore --configuration Release
+      - name: Build solution
+        run: dotnet build ./Microsoft.Maui.sln --no-restore --configuration Release /p:EnableWindowsTargeting=true
