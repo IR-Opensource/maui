@@ -1,7 +1,7 @@
-name: .NET MAUI Build
+name: .NET MAUI Build (Ubuntu)
 
 on:
-  workflow_dispatch:  # manual trigger
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,15 +14,15 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 10.0.x  # or whatever version you are using
+          dotnet-version: 10.0.x
 
-      - name: Install required workloads
+      - name: Install Linux workloads
         run: |
-          dotnet workload install android ios macos wasm-tools
+          dotnet workload install android wasm-tools
           dotnet workload restore
 
       - name: Restore solution
-        run: dotnet restore ./Microsoft.Maui.sln
+        run: dotnet restore ./Microsoft.Maui.sln /p:EnableWindowsTargeting=true
 
       - name: Build solution
         run: dotnet build ./Microsoft.Maui.sln --no-restore --configuration Release /p:EnableWindowsTargeting=true
