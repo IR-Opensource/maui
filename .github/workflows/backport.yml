@@ -1,24 +1,31 @@
-name: Install .NET Workloads
+name: Windows .NET MAUI Setup
 
 on:
   workflow_dispatch:
 
 jobs:
-  setup-dotnet:
+  build:
     runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: Install .NET 9.0.312 SDK
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.0.312'
+          dotnet-version: '9.0.312'  # matches your global.json
 
-      - name: Install supported workloads
+      - name: Verify SDK
+        run: dotnet --info
+
+      - name: Install workloads for Windows
         run: |
+          # Only workloads that can be installed on Windows
           dotnet workload install android wasm-tools
 
-      - name: Verify SDK & workloads
-        run: |
-          dotnet --info
-          dotnet workload list
+      - name: Restore solution
+        run: dotnet restore ./Microsoft.Maui.sln
+
+      - name: Build solution
+        run: dotnet build ./Microsoft.Maui.sln --no-restore --configuration Release
